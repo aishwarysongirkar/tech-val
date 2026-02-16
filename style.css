@@ -1,178 +1,125 @@
-/* ---------- ANIMATED BACKGROUND ---------- */
+*{
+    box-sizing:border-box;
+    margin:0;
+    padding:0;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+}
 
 body{
-    margin:0;
     height:100vh;
-    font-family:-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-    overflow:hidden;
+    background: linear-gradient(160deg,#ffe6f0,#ffd6ec,#ffeaf6);
     display:flex;
     justify-content:center;
     align-items:center;
-    background:#fff;
+    overflow:hidden;
 }
 
-/* moving gradient wallpaper */
-.bg{
-    position:fixed;
-    width:200%;
-    height:200%;
-    top:-50%;
-    left:-50%;
-    background:linear-gradient(
-        45deg,
-        #ffd6e7,
-        #ffe6f2,
-        #fff0f7,
-        #ffeaf3,
-        #ffdbea
-    );
-    background-size:400% 400%;
-    animation:gradientMove 18s ease infinite;
-    z-index:-2;
-}
-
-@keyframes gradientMove{
-    0%{ background-position:0% 50%; }
-    50%{ background-position:100% 50%; }
-    100%{ background-position:0% 50%; }
-}
-
-/* subtle floating hearts in background */
-
-.bg::after{
-    content:"💗 💞 💖 💘 💓";
-    position:absolute;
-    width:100%;
-    height:100%;
-    font-size:40px;
-    opacity:0.08;
-    line-height:120px;
-    word-spacing:60px;
-    animation:floatHearts 25s linear infinite;
-}
-
-@keyframes floatHearts{
-    from{ transform:translateY(0); }
-    to{ transform:translateY(-400px); }
-}
-
-
-/* ---------- CARD ---------- */
-
+/* main card */
 .card{
-    background:rgba(255,255,255,0.90);
-    backdrop-filter:blur(18px);
-    padding:45px 32px 70px 32px;
-    border-radius:26px;
+    width:92%;
+    max-width:420px;
+    background:white;
+    border-radius:22px;
+    padding:35px 25px 45px;
     text-align:center;
-    width:360px;
-    box-shadow:
-        0 30px 70px rgba(0,0,0,0.18),
-        0 10px 30px rgba(255,105,160,0.25);
-    animation:cardEnter 0.9s ease;
+    box-shadow:0 18px 45px rgba(0,0,0,0.12);
     position:relative;
 }
 
-@keyframes cardEnter{
-    from{ opacity:0; transform:translateY(35px) scale(.94); }
-    to{ opacity:1; transform:translateY(0px) scale(1); }
+/* typing text */
+#text{
+    font-size:20px;
+    line-height:1.5;
+    min-height:90px;
+    color:#333;
+    margin-bottom:25px;
 }
 
-
-/* ---------- TEXT ---------- */
-
-#line1{
-    color:#666;
-    font-weight:500;
-    min-height:26px;
-    transition:opacity 0.8s ease;
-}
-
-#line1.fade{
-    opacity:0;
-}
-
-#question{
-    color:#ff2e7a;
-    font-size:27px;
+/* reaction line */
+.reaction{
+    height:22px;
     margin-top:10px;
-    min-height:80px;
-    line-height:1.35;
-    animation:glow 2.2s ease-in-out infinite alternate;
+    color:#777;
+    font-size:14px;
 }
 
-@keyframes glow{
-    from{ text-shadow:0 0 0px rgba(255,46,122,0); }
-    to{ text-shadow:0 0 18px rgba(255,46,122,0.45); }
-}
-
-
-/* ---------- BUTTONS ---------- */
-
+/* buttons */
 .buttons{
-    margin-top:28px;
     position:relative;
-    height:170px;
+    height:140px;
+    margin-top:15px;
 }
 
 button{
-    padding:13px 26px;
-    font-size:18px;
     border:none;
-    border-radius:16px;
+    padding:14px 26px;
+    font-size:18px;
+    border-radius:14px;
     cursor:pointer;
-    position:absolute;
-    transition:transform .25s ease, box-shadow .25s ease;
+    transition:
+    transform .25s cubic-bezier(.17,.67,.3,1.3),
+    left .25s ease,
+    top .25s ease,
+    box-shadow .25s ease,
+    opacity .3s;
 }
 
-/* YES */
-#yes{
-    background:linear-gradient(135deg,#ff4f8b,#ff2e7a);
+/* YES button */
+#yesBtn{
+    background:linear-gradient(135deg,#ff6b9c,#ff9ac1);
     color:white;
-    left:25%;
-    box-shadow:0 10px 22px rgba(255,46,122,0.4);
+    box-shadow:0 10px 25px rgba(255,105,150,0.45);
+    position:relative;
 }
 
-#yes:hover{
-    transform:scale(1.15);
-    box-shadow:0 14px 30px rgba(255,46,122,0.6);
-}
-
-/* NO */
-#no{
-    background:#f1f1f1;
+/* NO button */
+#noBtn{
+    background:#f2f2f2;
     color:#444;
+    position:absolute;
     left:55%;
+    top:40%;
 }
 
+/* pulse feedback */
+.pulse{
+    animation:pulse .12s;
+}
 
-/* ---------- HEART RAIN ---------- */
+@keyframes pulse{
+    0%{transform:scale(1);}
+    50%{transform:scale(.992);}
+    100%{transform:scale(1);}
+}
 
+/* shaking no button */
+@keyframes shake{
+    0%{transform:translateX(0);}
+    25%{transform:translateX(-3px);}
+    50%{transform:translateX(3px);}
+    75%{transform:translateX(-3px);}
+    100%{transform:translateX(0);}
+}
+
+/* HEARTS */
 .heart{
     position:fixed;
-    top:-20px;
+    bottom:-20px;
     font-size:22px;
-    animation:fall linear forwards;
     pointer-events:none;
+    animation:floatUp 2.8s linear forwards;
 }
 
-@keyframes fall{
-    to{
-        transform:translateY(110vh);
+@keyframes floatUp{
+    0%{
+        transform:translateY(0) scale(.6) rotate(0deg);
+        opacity:1;
+    }
+    60%{
+        opacity:.9;
+    }
+    100%{
+        transform:translateY(-110vh) scale(1.4) rotate(25deg);
         opacity:0;
-    }
-}
-
-
-/* ---------- MOBILE ---------- */
-
-@media(max-width:600px){
-    .card{
-        width:88%;
-        padding:40px 24px 70px 24px;
-    }
-
-    #question{
-        font-size:23px;
     }
 }

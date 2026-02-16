@@ -1,124 +1,155 @@
-const line1 = document.getElementById("line1");
-const question = document.getElementById("question");
-const buttons = document.getElementById("buttons");
-const yesBtn = document.getElementById("yes");
-const noBtn = document.getElementById("no");
+const text = document.getElementById("text");
+const yesBtn = document.getElementById("yesBtn");
+const noBtn = document.getElementById("noBtn");
+const reaction = document.getElementById("reactionText");
 
-/* ---------------- TYPING EFFECT ---------------- */
+let noClicks = 0;
 
-function typeText(element, text, speed, callback){
-    let i = 0;
+/* ---------------- TYPING INTRO ---------------- */
 
-    function typing(){
-        if(i < text.length){
-            element.innerHTML += text.charAt(i);
-            i++;
-            setTimeout(typing, speed);
-        } else if(callback){
-            callback();
-        }
+const introLines = [
+"Hello Aarya…",
+"I’ve been meaning to ask you something…",
+"Will you go on a date with me this Sunday?"
+];
+
+let line = 0;
+let char = 0;
+
+function typeLine(){
+    if(line >= introLines.length){
+        document.querySelector(".buttons").style.display="block";
+        return;
     }
-    typing();
-}
 
-/* first line */
-typeText(
-    line1,
-    "Hello Aarya…",
-    70,
-    () => {
-        setTimeout(()=>{
-            typeText(
-                question,
-                "Will you go on a date with me this Sunday?",
-                60,
-                () => {
-                    buttons.style.display = "block";
-                    placeNoInitial();
-
-                    /* fade away hello text after question appears */
-                    setTimeout(()=>{
-                        line1.classList.add("fade");
-                    },900);
-                }
-            );
-        },700);
+    if(char < introLines[line].length){
+        text.innerHTML += introLines[line].charAt(char);
+        char++;
+        setTimeout(typeLine,35);
+    }else{
+        text.innerHTML += "<br><br>";
+        line++;
+        char=0;
+        setTimeout(typeLine,700);
     }
-);
-
-
-/* ---------------- BUTTON GAME ---------------- */
-
-let noScale = 1;
-let yesScale = 1;
-
-/* initial position */
-function placeNoInitial(){
-    noBtn.style.left = "60%";
-    noBtn.style.top = "20px";
 }
 
-/* NO escape logic */
-function escapeNo(){
+typeLine();
 
-    const padding = 20;
+/* ---------------- NO BUTTON BEHAVIOUR ---------------- */
 
-    const maxX = window.innerWidth - noBtn.offsetWidth - padding;
-    const maxY = window.innerHeight - noBtn.offsetHeight - padding;
+const lines = [
+"Are you sure? 😌",
+"Try again...",
+"That's not the correct answer.",
+"Aarya… be honest 😂",
+"You’re literally chasing it now",
+"Okay this is suspicious",
+"I think you want to press Yes…"
+];
 
-    const randomX = Math.random() * maxX;
-    const randomY = Math.random() * maxY;
+noBtn.addEventListener("click",()=>{
 
-    /* teleport */
-    noBtn.style.left = randomX + "px";
-    noBtn.style.top = randomY + "px";
+    noClicks++;
 
-    /* shrink NO */
-    noScale -= 0.09;
-    if(noScale < 0.28) noScale = 0.28;
-    noBtn.style.transform = `scale(${noScale})`;
+    document.body.classList.add("pulse");
+    setTimeout(()=>document.body.classList.remove("pulse"),120);
 
-    /* grow YES */
-    yesScale += 0.12;
-    yesBtn.style.transform = `scale(${yesScale})`;
-    yesBtn.style.boxShadow = "0 0 22px rgba(255,46,122,0.6)";
-    yesBtn.style.zIndex = "5";
+    updateReaction();
+    growYes();
+    moveNo();
+});
+
+function updateReaction(){
+    if(noClicks-1 < lines.length){
+        reaction.innerText = lines[noClicks-1];
+    }
 }
 
-/* desktop + iPhone */
-noBtn.addEventListener("mouseenter", escapeNo);
-noBtn.addEventListener("touchstart", escapeNo);
-
-
-/* ---------------- HEART SHOWER ---------------- */
-
-function startHearts(){
-    setInterval(()=>{
-        const heart = document.createElement("div");
-        heart.className = "heart";
-        heart.innerHTML = "💖";
-
-        heart.style.left = Math.random()*100 + "vw";
-        heart.style.animationDuration = (Math.random()*2+3)+"s";
-
-        document.body.appendChild(heart);
-        setTimeout(()=>heart.remove(),5000);
-    },170);
+function growYes(){
+    let scale = 1 + (noClicks*0.18);
+    yesBtn.style.transform = `scale(${scale})`;
+    yesBtn.style.boxShadow = `0 0 ${15+noClicks*6}px rgba(255,80,140,0.7)`;
 }
 
+function moveNo(){
+
+    const maxX = window.innerWidth - noBtn.offsetWidth - 20;
+    const maxY = window.innerHeight - noBtn.offsetHeight - 20;
+
+    const x = Math.random()*maxX;
+    const y = Math.random()*maxY;
+
+    noBtn.style.position="fixed";
+    noBtn.style.left=x+"px";
+    noBtn.style.top=y+"px";
+
+    if(noClicks===3) noBtn.style.transform="rotate(20deg)";
+    if(noClicks===4) noBtn.style.transform="scale(.7)";
+    if(noClicks===6){
+        noBtn.style.animation="shake .3s infinite";
+        noBtn.innerText="okay fine 😭";
+    }
+
+    if(noClicks>=7){
+        noBtn.style.opacity="0";
+        setTimeout(()=>noBtn.style.opacity="1",900);
+    }
+}
 
 /* ---------------- YES CLICK ---------------- */
 
-yesBtn.addEventListener("click", ()=>{
+yesBtn.addEventListener("click",()=>{
 
-    question.innerHTML = "Yay… I was hoping you'd say that ❤️";
-    buttons.style.display="none";
+    text.innerHTML="Yay!! I knew it 😊";
+    reaction.innerText="";
+    noBtn.style.display="none";
+    yesBtn.style.display="none";
 
     startHearts();
-
-    /* open calendar invite */
-    setTimeout(()=>{
-        window.location.href = "date.ics";
-    },3000);
+    downloadCalendar();
 });
+
+/* ---------------- HEART ANIMATION ---------------- */
+
+function startHearts(){
+    setInterval(()=>{
+        createHeart();
+    },220);
+}
+
+function createHeart(){
+    const heart=document.createElement("div");
+    heart.className="heart";
+    heart.innerHTML="💖";
+
+    heart.style.left=Math.random()*window.innerWidth+"px";
+    heart.style.fontSize=(18+Math.random()*22)+"px";
+
+    document.body.appendChild(heart);
+
+    setTimeout(()=>heart.remove(),2800);
+}
+
+/* ---------------- CALENDAR INVITE ---------------- */
+
+function downloadCalendar(){
+
+const event=`BEGIN:VCALENDAR
+VERSION:2.0
+BEGIN:VEVENT
+SUMMARY:Date with Aishwary ☕
+DESCRIPTION:Brunch + Drive + Walk :)
+LOCATION:Your Favorite Cafe
+DTSTART:20260222T050000Z
+DTEND:20260222T073000Z
+END:VEVENT
+END:VCALENDAR`;
+
+const blob=new Blob([event],{type:"text/calendar"});
+const link=document.createElement("a");
+link.href=URL.createObjectURL(blob);
+link.download="date.ics";
+link.click();
+}
 
