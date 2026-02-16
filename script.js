@@ -10,7 +10,7 @@ let noClicks = 0;
 const introLines = [
 "Hello Aarya…",
 "Kashi ahes ? Good Morning !! I’ve wanted to ask you something…",
-"Will you go on a date with me this Sunday? Will you be my Valentine ?"
+"Will you go on a date with me this Sunday?"
 ];
 
 let line = 0;
