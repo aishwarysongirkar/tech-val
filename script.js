@@ -9,7 +9,7 @@ let noClicks = 0;
 
 const introLines = [
 "Hello Aarya…",
-"Kashi ahes ?? Good Morning !!! I’ve been meaning to ask you something…",
+"I’ve been meaning to ask you something…",
 "Will you go on a date with me this Sunday?"
 ];
 
@@ -41,19 +41,16 @@ typeLine();
 const lines = [
 "Are you sure? 😌",
 "Try again...",
-"That's not the correct answer.",
-"Aarya… be honest 😂",
-"You’re literally chasing it now",
-"Okay this is suspicious",
-"I think you want to press Yes…"
+"That doesn't seem right 😂",
+"Aarya… be honest",
+"You are chasing it now",
+"I think you actually want to press Yes",
+"Okay this is getting obvious"
 ];
 
 noBtn.addEventListener("click",()=>{
 
     noClicks++;
-
-    document.body.classList.add("pulse");
-    setTimeout(()=>document.body.classList.remove("pulse"),120);
 
     updateReaction();
     growYes();
@@ -101,13 +98,25 @@ function moveNo(){
 
 yesBtn.addEventListener("click",()=>{
 
-    text.innerHTML="Yay!! I knew it 😊";
+    text.innerHTML = `
+    <div style="font-size:26px; font-weight:700; color:#ff4f87;">
+        Yay!! I knew it 😊
+    </div>
+    <br>
+    <div style="font-size:18px; color:#b03060; line-height:1.6;">
+        I'm excited for Sunday ❤️ <br>
+        Be ready at 10:30… <br>
+        This calendar invite will help you not forget it 😌
+    </div>
+    `;
+
     reaction.innerText="";
     noBtn.style.display="none";
     yesBtn.style.display="none";
 
     startHearts();
-    downloadCalendar();
+
+    setTimeout(downloadCalendar,1800);
 });
 
 /* ---------------- HEART ANIMATION ---------------- */
@@ -139,7 +148,7 @@ const event=`BEGIN:VCALENDAR
 VERSION:2.0
 BEGIN:VEVENT
 SUMMARY:Date with Aishwary ☕
-DESCRIPTION:Brunch + Drive + Walk :)
+DESCRIPTION:Brunch + Walk + Drive
 LOCATION:Your Favorite Cafe
 DTSTART:20260222T050000Z
 DTEND:20260222T073000Z
@@ -149,6 +158,6 @@ END:VCALENDAR`;
 const blob=new Blob([event],{type:"text/calendar"});
 const link=document.createElement("a");
 link.href=URL.createObjectURL(blob);
-link.download="date.ics";
+link.download="Sunday-Date.ics";
 link.click();
 }
