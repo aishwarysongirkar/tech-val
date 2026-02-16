@@ -1,155 +1,109 @@
-// detect mobile (important for iPhone safari sizing)
-if (/Android|iPhone|iPad|iPod/i.test(navigator.userAgent)) {
-  document.body.classList.add("mobile");
-}
+// ===== Elements =====
+const yesBtn = document.getElementById("yesBtn");
+const noBtn = document.getElementById("noBtn");
+const questionText = document.getElementById("questionText");
+const subText = document.getElementById("subText");
+const memeArea = document.getElementById("memeArea");
 
-/* ----------- TYPING INTRO ----------- */
+// your number
+const yourNumber = "918329115026";
 
-const introText = "Hello Aarya...\nI’ve been meaning to ask you something...";
-const mainText = document.getElementById("mainText");
+// ===== MOBILE DETECT =====
+const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
 
-let index = 0;
-mainText.innerHTML = "";
-
-function typeWriter() {
-  if (index < introText.length) {
-    if (introText.charAt(index) === "\n") {
-      mainText.innerHTML += "<br>";
-    } else {
-      mainText.innerHTML += introText.charAt(index);
-    }
-    index++;
-    setTimeout(typeWriter, 40);
-  } else {
-    setTimeout(showQuestion, 900);
-  }
-}
-
-window.onload = typeWriter;
-
-function showQuestion() {
-  mainText.innerHTML = "Will you go on a date with me this Sunday? ❤️";
-}
-
-/* ----------- NO BUTTON GAME ----------- */
-
+// ===== NO BUTTON RUN AWAY (SUPER FAST) =====
 let noSize = 1;
-let yesSize = 1.1;
+let speed = 1;
 
 function moveNoButton() {
 
-  const noBtn = document.getElementById("noBtn");
-  const yesBtn = document.getElementById("yesBtn");
+    const padding = 30;
 
-  const maxX = window.innerWidth - 120;
-  const maxY = window.innerHeight - 80;
+    const maxX = window.innerWidth - noBtn.offsetWidth - padding;
+    const maxY = window.innerHeight - noBtn.offsetHeight - padding;
 
-  const randX = Math.random() * maxX;
-  const randY = Math.random() * maxY;
+    const x = Math.random() * maxX;
+    const y = Math.random() * maxY;
 
-  noBtn.style.position = "fixed";
-  noBtn.style.left = randX + "px";
-  noBtn.style.top = randY + "px";
+    noBtn.style.position = "fixed";
+    noBtn.style.left = x + "px";
+    noBtn.style.top = y + "px";
 
-  noSize -= 0.18;
-  if (noSize < 0.35) noSize = 0.35;
-  noBtn.style.transform = `scale(${noSize})`;
+    // shrink the button each time
+    noSize -= 0.08;
+    if (noSize < 0.35) noSize = 0.35;
 
-  yesSize += 0.22;
-  yesBtn.style.transform = `scale(${yesSize})`;
+    noBtn.style.transform = `scale(${noSize})`;
 
-  if (navigator.vibrate) navigator.vibrate(80);
+    // speed increases
+    speed += 0.2;
 }
 
-/* ----------- YES BUTTON ----------- */
+// Desktop hover
+noBtn.addEventListener("mouseover", moveNoButton);
+
+// Mobile touch
+noBtn.addEventListener("touchstart", moveNoButton);
+
+// ===== HEART RAIN =====
+function createHeart() {
+    const heart = document.createElement("div");
+    heart.innerHTML = "💖";
+    heart.style.position = "fixed";
+    heart.style.left = Math.random() * 100 + "vw";
+    heart.style.top = "-20px";
+    heart.style.fontSize = Math.random() * 18 + 18 + "px";
+    heart.style.animation = "fall 3s linear forwards";
+    heart.style.zIndex = "9999";
+    document.body.appendChild(heart);
+
+    setTimeout(() => heart.remove(), 3000);
+}
+
+function startHearts() {
+    setInterval(createHeart, 120);
+}
+
+// ===== YES CLICKED =====
+yesBtn.addEventListener("click", sheSaidYes);
 
 function sheSaidYes() {
 
-  const sub = document.getElementById("subText");
-  sub.style.display = "none";
+    // remove subtext
+    subText.style.display = "none";
 
-  // Shinchan dancing GIF
-  document.getElementById("memeArea").innerHTML =
-    `<img src="https://media.tenor.com/0AVbKGY_MxMAAAAC/shinchan-dance.gif"
-      style="width:160px; margin-top:10px; border-radius:12px;">`;
+    // change main text
+    questionText.innerHTML = "Yayyyy!! ❤️ I knew you'd say yes 😄";
 
-  mainText.innerHTML = "YAYYY ❤️ I knew you would say yes!";
+    // Shinchan dancing GIF
+    memeArea.innerHTML =
+      `<img src="https://media.tenor.com/BT9N6y0tS4gAAAAC/shinchan-shin-chan.gif"
+        style="width:190px; margin-top:12px; border-radius:14px; box-shadow:0 6px 18px rgba(0,0,0,0.25);">`;
 
-  startHeartsRain();
+    // start hearts
+    startHearts();
 
-  // Proper iPhone compatible encoding
-  const message = encodeURIComponent(
-`Heyy 😄
+    // WhatsApp message (human sounding)
+    const message =
+`Hey 😊
+I just saw your surprise…
 
-I just opened your surprise… and okay fine,
-yes — I’ll go on a date with you this Sunday ❤️
+and okay… yes ❤️
 
-10:30 works for me 🙂
-And you better not be late.`
-  );
+Sunday date it is.
+Pick me up at 10:30 😌`;
 
-  setTimeout(() => {
-    window.location.href =
-      "https://wa.me/918329115026?text=" + message;
-  }, 2500);
-}
+    // encode for iphone compatibility
+    const encoded = encodeURIComponent(message);
 
-/* ----------- HEART RAIN ----------- */
+    // open WhatsApp after 2.5 sec
+    setTimeout(() => {
 
-const canvas = document.getElementById("hearts");
-const ctx = canvas.getContext("2d");
+        if (isMobile) {
+            window.location.href = `https://wa.me/${yourNumber}?text=${encoded}`;
+        } else {
+            window.open(`https://web.whatsapp.com/send?phone=${yourNumber}&text=${encoded}`, "_blank");
+        }
 
-function resizeCanvas() {
-  canvas.width = window.innerWidth;
-  canvas.height = window.innerHeight;
-}
-
-resizeCanvas();
-window.addEventListener("resize", resizeCanvas);
-
-let hearts = [];
-
-function Heart() {
-  this.x = Math.random() * canvas.width;
-  this.y = -10;
-  this.size = Math.random() * 18 + 10;
-  this.speed = Math.random() * 2 + 1.5;
-}
-
-Heart.prototype.draw = function () {
-  ctx.fillStyle = "#ff4d6d";
-
-  let x = this.x;
-  let y = this.y;
-  let s = this.size / 2;
-
-  ctx.beginPath();
-  ctx.moveTo(x, y + s);
-  ctx.bezierCurveTo(x - s*2, y - s, x - s*2, y + s*2, x, y + s*3);
-  ctx.bezierCurveTo(x + s*2, y + s*2, x + s*2, y - s, x, y + s);
-  ctx.fill();
-};
-
-Heart.prototype.update = function () {
-  this.y += this.speed;
-};
-
-function startHeartsRain() {
-  setInterval(() => {
-    hearts.push(new Heart());
-  }, 180);
-
-  animateHearts();
-}
-
-function animateHearts() {
-  ctx.clearRect(0, 0, canvas.width, canvas.height);
-
-  hearts.forEach((heart, index) => {
-    heart.update();
-    heart.draw();
-    if (heart.y > canvas.height) hearts.splice(index, 1);
-  });
-
-  requestAnimationFrame(animateHearts);
+    }, 2500);
 }
