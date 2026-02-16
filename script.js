@@ -1,84 +1,112 @@
-function onFormSubmit(e) {
+// Detect mobile
+if (/Android|iPhone|iPad|iPod/i.test(navigator.userAgent)) {
+  document.body.classList.add("mobile");
+}
 
-  // ====== GET FORM DATA ======
-  var responses = e.namedValues;
+/* ---------------- NO BUTTON BEHAVIOUR ---------------- */
 
-  var name = responses["Name"][0];
-  var email = responses["Email"][0];
-  var phone = responses["Phone"][0];
-  var meetingDate = responses["Meeting Date"][0];
-  var meetingTime = responses["Meeting Time"][0];
-  var purpose = responses["Purpose"][0];
+let noSize = 1;
+let yesSize = 1.1;
 
-  // ====== CONVERT DATE & TIME ======
-  var startDateTime = new Date(meetingDate + " " + meetingTime);
-  var endDateTime = new Date(startDateTime.getTime() + 30 * 60000); // 30 minutes meeting
+function moveNoButton() {
 
-  // ====== CREATE GOOGLE CALENDAR EVENT ======
-  var calendar = CalendarApp.getDefaultCalendar();
+  const noBtn = document.getElementById("noBtn");
+  const yesBtn = document.getElementById("yesBtn");
 
-  var event = calendar.createEvent(
-    "MCCIA Meeting with " + name,
-    startDateTime,
-    endDateTime,
-    {
-      description:
-        "Meeting Details:\n\n" +
-        "Name: " + name + "\n" +
-        "Email: " + email + "\n" +
-        "Phone: " + phone + "\n" +
-        "Purpose: " + purpose + "\n\n" +
-        "Mahratta Chamber of Commerce, Industries & Agriculture (MCCIA)\nPune",
-      guests: email,
-      sendInvites: true
-    }
-  );
+  // random screen movement (FAST)
+  const maxX = window.innerWidth - 120;
+  const maxY = window.innerHeight - 80;
 
-  // ====== FORMAT DATE ======
-  var formattedDate = Utilities.formatDate(startDateTime, "Asia/Kolkata", "dd MMMM yyyy");
-  var formattedTime = Utilities.formatDate(startDateTime, "Asia/Kolkata", "hh:mm a");
+  const randX = Math.random() * maxX;
+  const randY = Math.random() * maxY;
 
-  // ====== EMAIL TO APPLICANT ======
-  MailApp.sendEmail({
-    to: email,
-    subject: "MCCIA Meeting Confirmation",
-    htmlBody:
-      "<p>Dear " + name + ",</p>" +
-      "<p>Your meeting with <b>MCCIA</b> has been successfully scheduled.</p>" +
-      "<p><b>Date:</b> " + formattedDate + "<br>" +
-      "<b>Time:</b> " + formattedTime + "</p>" +
-      "<p>A calendar invitation has been sent to your email. Please accept it to add the meeting to your calendar.</p>" +
-      "<p>If you need to reschedule, simply reply to this email.</p>" +
-      "<br><p>Regards,<br><b>MCCIA Team</b><br>Pune</p>"
+  noBtn.style.position = "fixed";
+  noBtn.style.left = randX + "px";
+  noBtn.style.top = randY + "px";
+
+  // shrink NO button
+  noSize -= 0.18;
+  if (noSize < 0.35) noSize = 0.35;
+  noBtn.style.transform = `scale(${noSize})`;
+
+  // grow YES button
+  yesSize += 0.22;
+  yesBtn.style.transform = `scale(${yesSize})`;
+
+  // phone vibration
+  if (navigator.vibrate) navigator.vibrate(80);
+}
+
+/* ---------------- YES BUTTON ---------------- */
+
+function sheSaidYes() {
+
+  document.getElementById("mainText").innerText =
+    "YAYYYY ❤️ I knew it!!!";
+
+  startHeartsRain();
+
+  const message =
+    "Aarya said YES!!! ❤️%0A%0A" +
+    "Date: Sunday 💫%0A" +
+    "Pickup: 10:30 AM 🚗%0A" +
+    "Brunch + Walk + Piano drop 🎹";
+
+  // redirect to WhatsApp after celebration
+  setTimeout(() => {
+    window.location.href =
+      "https://wa.me/918329115026?text=" + message;
+  }, 2500);
+}
+
+/* ---------------- HEART RAIN ---------------- */
+
+const canvas = document.getElementById("hearts");
+const ctx = canvas.getContext("2d");
+
+canvas.width = window.innerWidth;
+canvas.height = window.innerHeight;
+
+let hearts = [];
+
+function Heart() {
+  this.x = Math.random() * canvas.width;
+  this.y = -10;
+  this.size = Math.random() * 20 + 10;
+  this.speed = Math.random() * 2 + 1;
+}
+
+Heart.prototype.draw = function () {
+  ctx.fillStyle = "#ff4d6d";
+  ctx.beginPath();
+  ctx.moveTo(this.x, this.y);
+  ctx.arc(this.x - this.size / 2, this.y, this.size / 2, 0, Math.PI, true);
+  ctx.arc(this.x + this.size / 2, this.y, this.size / 2, 0, Math.PI, true);
+  ctx.lineTo(this.x, this.y + this.size);
+  ctx.fill();
+};
+
+Heart.prototype.update = function () {
+  this.y += this.speed;
+};
+
+function startHeartsRain() {
+  setInterval(() => {
+    hearts.push(new Heart());
+  }, 200);
+
+  animateHearts();
+}
+
+function animateHearts() {
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+  hearts.forEach((heart, index) => {
+    heart.update();
+    heart.draw();
+
+    if (heart.y > canvas.height) hearts.splice(index, 1);
   });
 
-  // ====== EMAIL TO YOU (ADMIN) ======
-  MailApp.sendEmail({
-    to: "aishwarysongirkar30@gmail.com",   // ⚠️ CHANGE THIS TO YOUR EMAIL
-    subject: "New Meeting Booking - " + name,
-    body:
-      "New meeting scheduled:\n\n" +
-      "Name: " + name + "\n" +
-      "Email: " + email + "\n" +
-      "Phone: " + phone + "\n" +
-      "Date: " + formattedDate + "\n" +
-      "Time: " + formattedTime + "\n" +
-      "Purpose: " + purpose
-  });
-
-  // ====== WHATSAPP MESSAGE LINK TO YOU ======
-  var adminPhone = "918329115026";   // ✅ YOUR NUMBER UPDATED
-
-  var message =
-    "New MCCIA Meeting Booking:%0A%0A" +
-    "Name: " + name + "%0A" +
-    "Phone: " + phone + "%0A" +
-    "Email: " + email + "%0A" +
-    "Date: " + formattedDate + "%0A" +
-    "Time: " + formattedTime + "%0A" +
-    "Purpose: " + purpose;
-
-  var whatsappLink = "https://wa.me/" + adminPhone + "?text=" + message;
-
-  Logger.log("WhatsApp Notification Link: " + whatsappLink);
+  requestAnimationFrame(animateHearts);
 }

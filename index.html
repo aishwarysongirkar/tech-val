@@ -3,36 +3,25 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Aarya ❤️</title>
+<title>For Aarya ❤️</title>
 <link rel="stylesheet" href="style.css">
 </head>
 
 <body>
 
-<div class="card">
-    <div class="emoji">🐻❤️</div>
+<div class="container">
 
-    <h1 id="question">Aarya, will you go on a date with me?</h1>
+    <h1 id="mainText">Aarya, I want to ask you something...</h1>
+    <p class="sub">You have to answer honestly 😌</p>
 
     <div class="buttons">
-        <button id="yesBtn">Yes</button>
-        <button id="noBtn">No</button>
+        <button id="yesBtn" onclick="sheSaidYes()">Yes ❤️</button>
+        <button id="noBtn" onclick="moveNoButton()">No</button>
     </div>
 
-    <p class="small">*You cannot say no 🤭</p>
 </div>
 
-<div id="success" class="hidden">
-    <h1>YAYYYYY ❤️</h1>
-    <p>Okay… now it’s official 😄</p>
-    <p>Sunday morning is ours.</p>
-    <p>I’ll pick you up at 10:30.</p>
-
-    <button id="whatsappBtn">Confirm on WhatsApp</button>
-</div>
-
-<!-- hearts -->
-<div id="hearts"></div>
+<canvas id="hearts"></canvas>
 
 <script src="script.js"></script>
 </body>
