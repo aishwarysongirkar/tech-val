@@ -1,155 +1,84 @@
-// detect mobile (important for iPhone safari sizing)
-if (/Android|iPhone|iPad|iPod/i.test(navigator.userAgent)) {
-  document.body.classList.add("mobile");
+* {
+  box-sizing: border-box;
 }
 
-/* ----------- TYPING INTRO ----------- */
-
-const introText = "Hello Aarya...\nI’ve been meaning to ask you something...";
-const mainText = document.getElementById("mainText");
-
-let index = 0;
-mainText.innerHTML = "";
-
-function typeWriter() {
-  if (index < introText.length) {
-    if (introText.charAt(index) === "\n") {
-      mainText.innerHTML += "<br>";
-    } else {
-      mainText.innerHTML += introText.charAt(index);
-    }
-    index++;
-    setTimeout(typeWriter, 40);
-  } else {
-    setTimeout(showQuestion, 900);
-  }
+body {
+  margin: 0;
+  font-family: 'Segoe UI', Arial, sans-serif;
+  background: linear-gradient(135deg, #ffd6e0, #ffeaf1);
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  overflow: hidden;
 }
 
-window.onload = typeWriter;
-
-function showQuestion() {
-  mainText.innerHTML = "Will you go on a date with me this Sunday? ❤️";
+/* CARD */
+.container {
+  position: relative;
+  z-index: 2;
+  background: white;
+  padding: 35px 25px;
+  border-radius: 20px;
+  width: min(90%, 380px);
+  text-align: center;
+  box-shadow: 0 12px 35px rgba(0,0,0,0.15);
 }
 
-/* ----------- NO BUTTON GAME ----------- */
-
-let noSize = 1;
-let yesSize = 1.1;
-
-function moveNoButton() {
-
-  const noBtn = document.getElementById("noBtn");
-  const yesBtn = document.getElementById("yesBtn");
-
-  const maxX = window.innerWidth - 120;
-  const maxY = window.innerHeight - 80;
-
-  const randX = Math.random() * maxX;
-  const randY = Math.random() * maxY;
-
-  noBtn.style.position = "fixed";
-  noBtn.style.left = randX + "px";
-  noBtn.style.top = randY + "px";
-
-  noSize -= 0.18;
-  if (noSize < 0.35) noSize = 0.35;
-  noBtn.style.transform = `scale(${noSize})`;
-
-  yesSize += 0.22;
-  yesBtn.style.transform = `scale(${yesSize})`;
-
-  if (navigator.vibrate) navigator.vibrate(80);
+/* TEXT */
+h1 {
+  font-size: 24px;
+  color: #d6336c;
+  margin-bottom: 10px;
+  min-height: 60px;
 }
 
-/* ----------- YES BUTTON ----------- */
-
-function sheSaidYes() {
-
-  const sub = document.getElementById("subText");
-  sub.style.display = "none";
-
-  // Shinchan dancing GIF
-  document.getElementById("memeArea").innerHTML =
-    `<img src="https://media.tenor.com/0AVbKGY_MxMAAAAC/shinchan-dance.gif"
-      style="width:160px; margin-top:10px; border-radius:12px;">`;
-
-  mainText.innerHTML = "YAYYY ❤️ I knew you would say yes!";
-
-  startHeartsRain();
-
-  // Proper iPhone compatible encoding
-  const message = encodeURIComponent(
-`Heyy 😄
-
-I just opened your surprise… and okay fine,
-yes — I’ll go on a date with you this Sunday ❤️
-
-10:30 works for me 🙂
-And you better not be late.`
-  );
-
-  setTimeout(() => {
-    window.location.href =
-      "https://wa.me/918329115026?text=" + message;
-  }, 2500);
+.sub {
+  font-size: 16px;
+  color: #555;
+  margin-bottom: 25px;
 }
 
-/* ----------- HEART RAIN ----------- */
-
-const canvas = document.getElementById("hearts");
-const ctx = canvas.getContext("2d");
-
-function resizeCanvas() {
-  canvas.width = window.innerWidth;
-  canvas.height = window.innerHeight;
+/* BUTTONS */
+button {
+  padding: 14px 24px;
+  font-size: 18px;
+  border-radius: 14px;
+  border: none;
+  cursor: pointer;
+  transition: 0.25s ease;
+  margin: 8px;
 }
 
-resizeCanvas();
-window.addEventListener("resize", resizeCanvas);
-
-let hearts = [];
-
-function Heart() {
-  this.x = Math.random() * canvas.width;
-  this.y = -10;
-  this.size = Math.random() * 18 + 10;
-  this.speed = Math.random() * 2 + 1.5;
+#yesBtn {
+  background: #ff4d6d;
+  color: white;
+  box-shadow: 0 0 22px rgba(255, 77, 109, 0.6);
 }
 
-Heart.prototype.draw = function () {
-  ctx.fillStyle = "#ff4d6d";
-
-  let x = this.x;
-  let y = this.y;
-  let s = this.size / 2;
-
-  ctx.beginPath();
-  ctx.moveTo(x, y + s);
-  ctx.bezierCurveTo(x - s*2, y - s, x - s*2, y + s*2, x, y + s*3);
-  ctx.bezierCurveTo(x + s*2, y + s*2, x + s*2, y - s, x, y + s);
-  ctx.fill();
-};
-
-Heart.prototype.update = function () {
-  this.y += this.speed;
-};
-
-function startHeartsRain() {
-  setInterval(() => {
-    hearts.push(new Heart());
-  }, 180);
-
-  animateHearts();
+#yesBtn:hover {
+  transform: scale(1.08);
 }
 
-function animateHearts() {
-  ctx.clearRect(0, 0, canvas.width, canvas.height);
+#noBtn {
+  background: #777;
+  color: white;
+}
 
-  hearts.forEach((heart, index) => {
-    heart.update();
-    heart.draw();
-    if (heart.y > canvas.height) hearts.splice(index, 1);
-  });
+/* HEART CANVAS */
+canvas {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 1;
+  pointer-events: none;
+}
 
-  requestAnimationFrame(animateHearts);
+/* MOBILE */
+@media (max-width: 480px) {
+  h1 { font-size: 22px; }
+  .sub { font-size: 15px; }
+  #yesBtn { font-size: 22px; }
 }
