@@ -9,8 +9,8 @@ let noClicks = 0;
 
 const introLines = [
 "Hello Aarya…",
-"I’ve been meaning to ask you something…",
-"Will you go on a date with me this Sunday?"
+"Kashi ahes ? Good Morning !! I’ve wanted to ask you something…",
+"Will you go on a date with me this Sunday? Will you be my Valentine ?"
 ];
 
 let line = 0;
@@ -100,11 +100,11 @@ yesBtn.addEventListener("click",()=>{
 
     text.innerHTML = `
     <div style="font-size:26px; font-weight:700; color:#ff4f87;">
-        Yay!! I knew it 😊
+        Yay!! I knew it 😊😊
     </div>
     <br>
     <div style="font-size:18px; color:#b03060; line-height:1.6;">
-        I'm excited for Sunday ❤️ <br>
+        I'm excited for Sunday ❤️❤️❤️ <br>
         Be ready at 10:30… <br>
         This calendar invite will help you not forget it 😌
     </div>
