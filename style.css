@@ -1,65 +1,80 @@
-/* ---------- BACKGROUND ---------- */
+/* ---------- ANIMATED BACKGROUND ---------- */
 
 body{
     margin:0;
     height:100vh;
+    font-family:-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    overflow:hidden;
     display:flex;
     justify-content:center;
     align-items:center;
-    font-family:-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-    background: radial-gradient(circle at 20% 20%, #ffeaf3, #fff6fb 40%, #fffdfd 80%);
-    overflow:hidden;
+    background:#fff;
 }
 
-/* soft floating background blobs */
-body::before,
-body::after{
-    content:"";
+/* moving gradient wallpaper */
+.bg{
     position:fixed;
-    width:420px;
-    height:420px;
-    border-radius:50%;
-    background:rgba(255,120,170,0.15);
-    filter:blur(120px);
-    z-index:-1;
-    animation:float 12s ease-in-out infinite;
+    width:200%;
+    height:200%;
+    top:-50%;
+    left:-50%;
+    background:linear-gradient(
+        45deg,
+        #ffd6e7,
+        #ffe6f2,
+        #fff0f7,
+        #ffeaf3,
+        #ffdbea
+    );
+    background-size:400% 400%;
+    animation:gradientMove 18s ease infinite;
+    z-index:-2;
 }
 
-body::before{
-    top:-120px;
-    left:-120px;
+@keyframes gradientMove{
+    0%{ background-position:0% 50%; }
+    50%{ background-position:100% 50%; }
+    100%{ background-position:0% 50%; }
 }
 
-body::after{
-    bottom:-150px;
-    right:-150px;
-    animation-delay:6s;
+/* subtle floating hearts in background */
+
+.bg::after{
+    content:"💗 💞 💖 💘 💓";
+    position:absolute;
+    width:100%;
+    height:100%;
+    font-size:40px;
+    opacity:0.08;
+    line-height:120px;
+    word-spacing:60px;
+    animation:floatHearts 25s linear infinite;
 }
 
-@keyframes float{
-    0%,100%{ transform:translateY(0px); }
-    50%{ transform:translateY(40px); }
+@keyframes floatHearts{
+    from{ transform:translateY(0); }
+    to{ transform:translateY(-400px); }
 }
 
 
 /* ---------- CARD ---------- */
 
 .card{
-    background:rgba(255,255,255,0.88);
-    backdrop-filter:blur(14px);
+    background:rgba(255,255,255,0.90);
+    backdrop-filter:blur(18px);
     padding:45px 32px 70px 32px;
-    border-radius:24px;
+    border-radius:26px;
     text-align:center;
     width:360px;
     box-shadow:
-        0 25px 60px rgba(0,0,0,0.15),
-        0 6px 18px rgba(255,120,170,0.18);
-    animation:fadeIn 0.9s ease;
+        0 30px 70px rgba(0,0,0,0.18),
+        0 10px 30px rgba(255,105,160,0.25);
+    animation:cardEnter 0.9s ease;
     position:relative;
 }
 
-@keyframes fadeIn{
-    from{ opacity:0; transform:translateY(25px) scale(.96); }
+@keyframes cardEnter{
+    from{ opacity:0; transform:translateY(35px) scale(.94); }
     to{ opacity:1; transform:translateY(0px) scale(1); }
 }
 
@@ -83,13 +98,12 @@ body::after{
     margin-top:10px;
     min-height:80px;
     line-height:1.35;
-    letter-spacing:.3px;
-    animation:softPulse 2.5s infinite alternate;
+    animation:glow 2.2s ease-in-out infinite alternate;
 }
 
-@keyframes softPulse{
+@keyframes glow{
     from{ text-shadow:0 0 0px rgba(255,46,122,0); }
-    to{ text-shadow:0 0 18px rgba(255,46,122,0.35); }
+    to{ text-shadow:0 0 18px rgba(255,46,122,0.45); }
 }
 
 
@@ -105,28 +119,28 @@ button{
     padding:13px 26px;
     font-size:18px;
     border:none;
-    border-radius:15px;
+    border-radius:16px;
     cursor:pointer;
     position:absolute;
     transition:transform .25s ease, box-shadow .25s ease;
 }
 
-/* YES button (main visual anchor) */
+/* YES */
 #yes{
     background:linear-gradient(135deg,#ff4f8b,#ff2e7a);
     color:white;
     left:25%;
-    box-shadow:0 10px 22px rgba(255,46,122,0.35);
+    box-shadow:0 10px 22px rgba(255,46,122,0.4);
 }
 
 #yes:hover{
     transform:scale(1.15);
-    box-shadow:0 14px 30px rgba(255,46,122,0.5);
+    box-shadow:0 14px 30px rgba(255,46,122,0.6);
 }
 
-/* NO button */
+/* NO */
 #no{
-    background:#f0f0f0;
+    background:#f1f1f1;
     color:#444;
     left:55%;
 }
