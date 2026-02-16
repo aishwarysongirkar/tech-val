@@ -114,4 +114,31 @@ Heart.prototype.draw = function () {
   ctx.beginPath();
   ctx.moveTo(x, y + s);
   ctx.bezierCurveTo(x - s*2, y - s, x - s*2, y + s*2, x, y + s*3);
-  ctx.b
+  ctx.bezierCurveTo(x + s*2, y + s*2, x + s*2, y - s, x, y + s);
+  ctx.fill();
+};
+
+Heart.prototype.update = function () {
+  this.y += this.speed;
+};
+
+function startHeartsRain() {
+  setInterval(() => {
+    hearts.push(new Heart());
+  }, 180);
+
+  animateHearts();
+}
+
+function animateHearts() {
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+  hearts.forEach((heart, index) => {
+    heart.update();
+    heart.draw();
+
+    if (heart.y > canvas.height) hearts.splice(index, 1);
+  });
+
+  requestAnimationFrame(animateHearts);
+}
