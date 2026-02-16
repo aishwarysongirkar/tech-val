@@ -1,163 +1,122 @@
-const text = document.getElementById("text");
+const text1 = "Kashi ahes? Good Morning!! I’ve wanted to ask you something...";
+let i = 0;
+
+const typingElement = document.getElementById("typingText");
+const helloText = document.getElementById("helloText");
+const questionText = document.getElementById("questionText");
+const buttons = document.getElementById("buttons");
 const yesBtn = document.getElementById("yesBtn");
 const noBtn = document.getElementById("noBtn");
-const reaction = document.getElementById("reactionText");
+const successMsg = document.getElementById("successMsg");
 
-let noClicks = 0;
 
-/* ---------------- TYPING INTRO ---------------- */
-
-const introLines = [
-"Hello Aarya…",
-"Kashi ahes ? Good Morning !! I’ve wanted to ask you something…",
-"Will you go on a date with me this Sunday?"
-];
-
-let line = 0;
-let char = 0;
-
-function typeLine(){
-    if(line >= introLines.length){
-        document.querySelector(".buttons").style.display="block";
-        return;
+// Typing effect
+function typeWriter(){
+    if(i < text1.length){
+        typingElement.innerHTML += text1.charAt(i);
+        i++;
+        setTimeout(typeWriter,40);
     }
-
-    if(char < introLines[line].length){
-        text.innerHTML += introLines[line].charAt(char);
-        char++;
-        setTimeout(typeLine,35);
-    }else{
-        text.innerHTML += "<br><br>";
-        line++;
-        char=0;
-        setTimeout(typeLine,700);
+    else{
+        setTimeout(showQuestion,1200);
     }
 }
+typeWriter();
 
-typeLine();
 
-/* ---------------- NO BUTTON BEHAVIOUR ---------------- */
+// Hide hello
+setTimeout(()=>{
+    helloText.style.opacity="0";
+    setTimeout(()=>helloText.style.display="none",600);
+},3500);
 
-const lines = [
-"Are you sure? 😌",
-"Try again...",
-"That doesn't seem right 😂",
-"Aarya… be honest",
-"You are chasing it now",
-"I think you actually want to press Yes",
-"Okay this is getting obvious"
-];
 
-noBtn.addEventListener("click",()=>{
+// Show question
+function showQuestion(){
+    questionText.style.display="block";
+    setTimeout(()=>{
+        buttons.style.display="block";
+    },600);
+}
 
-    noClicks++;
 
-    updateReaction();
-    growYes();
-    moveNo();
+// YES button
+let yesScale=1;
+
+yesBtn.addEventListener("click",()=>{
+
+    buttons.style.display="none";
+    questionText.style.display="none";
+    typingElement.style.display="none";
+
+    successMsg.style.display="block";
+    successMsg.innerHTML=
+    `Yaaayyyy 💖<br><br>
+    Excited for Sunday!<br>
+    Be prepared at <b>10:30 AM</b> 😌<br>
+    This calendar invite will help you not forget it!`;
+
+    createHearts();
+    downloadICS();
 });
 
-function updateReaction(){
-    if(noClicks-1 < lines.length){
-        reaction.innerText = lines[noClicks-1];
-    }
-}
 
-function growYes(){
-    let scale = 1 + (noClicks*0.18);
-    yesBtn.style.transform = `scale(${scale})`;
-    yesBtn.style.boxShadow = `0 0 ${15+noClicks*6}px rgba(255,80,140,0.7)`;
-}
+// NO button escape
+let noSize=1;
 
-function moveNo(){
+noBtn.addEventListener("mouseover",()=>{
 
-    const maxX = window.innerWidth - noBtn.offsetWidth - 20;
-    const maxY = window.innerHeight - noBtn.offsetHeight - 20;
-
-    const x = Math.random()*maxX;
-    const y = Math.random()*maxY;
+    const x=Math.random()*(window.innerWidth-100);
+    const y=Math.random()*(window.innerHeight-100);
 
     noBtn.style.position="fixed";
     noBtn.style.left=x+"px";
     noBtn.style.top=y+"px";
 
-    if(noClicks===3) noBtn.style.transform="rotate(20deg)";
-    if(noClicks===4) noBtn.style.transform="scale(.7)";
-    if(noClicks===6){
-        noBtn.style.animation="shake .3s infinite";
-        noBtn.innerText="okay fine 😭";
-    }
+    noSize-=0.1;
+    if(noSize<0.4) noSize=0.4;
+    noBtn.style.transform=`scale(${noSize})`;
 
-    if(noClicks>=7){
-        noBtn.style.opacity="0";
-        setTimeout(()=>noBtn.style.opacity="1",900);
-    }
-}
-
-/* ---------------- YES CLICK ---------------- */
-
-yesBtn.addEventListener("click",()=>{
-
-    text.innerHTML = `
-    <div style="font-size:26px; font-weight:700; color:#ff4f87;">
-        Yay!! I knew it 😊😊
-    </div>
-    <br>
-    <div style="font-size:18px; color:#b03060; line-height:1.6;">
-        I'm excited for Sunday ❤️❤️❤️ <br>
-        Be ready at 10:30… <br>
-        This calendar invite will help you not forget it 😌
-    </div>
-    `;
-
-    reaction.innerText="";
-    noBtn.style.display="none";
-    yesBtn.style.display="none";
-
-    startHearts();
-
-    setTimeout(downloadCalendar,1800);
+    yesScale+=0.15;
+    yesBtn.style.transform=`scale(${yesScale})`;
 });
 
-/* ---------------- HEART ANIMATION ---------------- */
 
-function startHearts(){
+// Hearts
+function createHearts(){
     setInterval(()=>{
-        createHeart();
-    },220);
+        const heart=document.createElement("div");
+        heart.className="heart";
+        heart.innerHTML="❤️";
+        heart.style.left=Math.random()*100+"vw";
+        heart.style.fontSize=(18+Math.random()*22)+"px";
+        document.body.appendChild(heart);
+
+        setTimeout(()=>heart.remove(),4000);
+    },200);
 }
 
-function createHeart(){
-    const heart=document.createElement("div");
-    heart.className="heart";
-    heart.innerHTML="💖";
 
-    heart.style.left=Math.random()*window.innerWidth+"px";
-    heart.style.fontSize=(18+Math.random()*22)+"px";
+// Calendar invite
+function downloadICS(){
 
-    document.body.appendChild(heart);
-
-    setTimeout(()=>heart.remove(),2800);
-}
-
-/* ---------------- CALENDAR INVITE ---------------- */
-
-function downloadCalendar(){
-
-const event=`BEGIN:VCALENDAR
+const icsData=`BEGIN:VCALENDAR
 VERSION:2.0
 BEGIN:VEVENT
-SUMMARY:Date with Aishwary ☕
-DESCRIPTION:Brunch + Walk + Drive
-LOCATION:Your Favorite Cafe
+SUMMARY:Date with Aishwary ❤️
+DESCRIPTION:Sunday Brunch Date
+LOCATION:Pune
 DTSTART:20260222T050000Z
-DTEND:20260222T073000Z
+DTEND:20260222T080000Z
 END:VEVENT
 END:VCALENDAR`;
 
-const blob=new Blob([event],{type:"text/calendar"});
-const link=document.createElement("a");
+const blob=new Blob([icsData],{type:'text/calendar'});
+const link=document.createElement('a');
 link.href=URL.createObjectURL(blob);
-link.download="Sunday-Date.ics";
+link.download="Sunday_Date.ics";
+document.body.appendChild(link);
 link.click();
+document.body.removeChild(link);
 }
+
