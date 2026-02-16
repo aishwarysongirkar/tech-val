@@ -41,18 +41,18 @@ typeText(
 );
 
 
-/* ---------------- BUTTON GAME ---------------- */
+/* ---------------- NO BUTTON GAME ---------------- */
 
 let noScale = 1;
 let yesScale = 1;
 
-/* initial position inside box */
+/* initial position */
 function placeNoInitial(){
     noBtn.style.left = "60%";
     noBtn.style.top = "20px";
 }
 
-/* when she tries to press NO */
+/* when she tries pressing NO */
 function escapeNo(){
 
     const padding = 20;
@@ -63,7 +63,7 @@ function escapeNo(){
     const randomX = Math.random() * maxX;
     const randomY = Math.random() * maxY;
 
-    /* move button randomly */
+    /* teleport NO button */
     noBtn.style.left = randomX + "px";
     noBtn.style.top = randomY + "px";
 
@@ -79,7 +79,7 @@ function escapeNo(){
     yesBtn.style.zIndex = "5";
 }
 
-/* works on both laptop & iPhone */
+/* desktop + mobile */
 noBtn.addEventListener("mouseenter", escapeNo);
 noBtn.addEventListener("touchstart", escapeNo);
 
@@ -101,7 +101,7 @@ function startHearts(){
 }
 
 
-/* ---------------- YES CLICK ---------------- */
+/* ---------------- YES CLICK → CALENDAR INVITE ---------------- */
 
 yesBtn.addEventListener("click", ()=>{
 
@@ -110,19 +110,8 @@ yesBtn.addEventListener("click", ()=>{
 
     startHearts();
 
-    const subject = "Sunday ☕";
-    const body =
-`Hi Aishwary,
-
-I just opened your surprise… and yes 😄
-
-Sunday works for me.
-10:30 pick-up confirmed.
-
-– Aarya`;
-
+    /* open calendar invite after hearts */
     setTimeout(()=>{
-        window.location.href =
-        `mailto:aishwarysongirkar30@gmail.com?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
-    },3500);
+        window.location.href = "date.ics";
+    },3000);
 });
