@@ -8,12 +8,13 @@ const noBtn = document.getElementById("no");
 
 function typeText(element, text, speed, callback){
     let i = 0;
+
     function typing(){
         if(i < text.length){
             element.innerHTML += text.charAt(i);
             i++;
             setTimeout(typing, speed);
-        }else if(callback){
+        } else if(callback){
             callback();
         }
     }
@@ -32,7 +33,7 @@ typeText(
                 60,
                 () => {
                     buttons.style.display = "block";
-                    startNoMovement();
+                    placeNoInitial();
                 }
             );
         },700);
@@ -40,70 +41,47 @@ typeText(
 );
 
 
-/* ---------------- NO BUTTON GAME LOGIC ---------------- */
+/* ---------------- BUTTON GAME ---------------- */
 
 let noScale = 1;
 let yesScale = 1;
-let velocityX = 3;
-let velocityY = 2.5;
-let posX = 120;
-let posY = 40;
-let moving = false;
 
-/* Start continuous bouncing movement */
-function startNoMovement(){
-    if(moving) return;
-    moving = true;
-    requestAnimationFrame(animateNo);
+/* initial position inside box */
+function placeNoInitial(){
+    noBtn.style.left = "60%";
+    noBtn.style.top = "20px";
 }
 
-function animateNo(){
+/* when she tries to press NO */
+function escapeNo(){
 
-    const maxX = window.innerWidth - noBtn.offsetWidth;
-    const maxY = window.innerHeight - noBtn.offsetHeight;
+    const padding = 20;
 
-    posX += velocityX;
-    posY += velocityY;
+    const maxX = window.innerWidth - noBtn.offsetWidth - padding;
+    const maxY = window.innerHeight - noBtn.offsetHeight - padding;
 
-    /* bounce from edges */
-    if(posX <= 0 || posX >= maxX){
-        velocityX *= -1;
-    }
-    if(posY <= 0 || posY >= maxY){
-        velocityY *= -1;
-    }
+    const randomX = Math.random() * maxX;
+    const randomY = Math.random() * maxY;
 
-    noBtn.style.left = posX + "px";
-    noBtn.style.top = posY + "px";
-
-    requestAnimationFrame(animateNo);
-}
-
-
-/* When she tries to press NO */
-function escapeAttempt(){
+    /* move button randomly */
+    noBtn.style.left = randomX + "px";
+    noBtn.style.top = randomY + "px";
 
     /* shrink NO */
-    noScale -= 0.12;
-    if(noScale < 0.25) noScale = 0.25;
+    noScale -= 0.09;
+    if(noScale < 0.28) noScale = 0.28;
     noBtn.style.transform = `scale(${noScale})`;
-
-    /* speed up */
-    velocityX *= 1.18;
-    velocityY *= 1.18;
 
     /* grow YES */
     yesScale += 0.12;
     yesBtn.style.transform = `scale(${yesScale})`;
-    yesBtn.style.zIndex = "10";
-
-    /* glow effect */
-    yesBtn.style.boxShadow = "0 0 25px rgba(255,46,122,0.7)";
+    yesBtn.style.boxShadow = "0 0 22px rgba(255,46,122,0.6)";
+    yesBtn.style.zIndex = "5";
 }
 
-/* desktop + mobile */
-noBtn.addEventListener("mouseenter", escapeAttempt);
-noBtn.addEventListener("touchstart", escapeAttempt);
+/* works on both laptop & iPhone */
+noBtn.addEventListener("mouseenter", escapeNo);
+noBtn.addEventListener("touchstart", escapeNo);
 
 
 /* ---------------- HEART SHOWER ---------------- */
@@ -119,7 +97,7 @@ function startHearts(){
 
         document.body.appendChild(heart);
         setTimeout(()=>heart.remove(),5000);
-    },160);
+    },170);
 }
 
 
