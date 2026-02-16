@@ -1,67 +1,28 @@
-const codeLines = [
-"Booting LoveOS v1.0...",
-"Starting romantic protocol...",
-"Connecting to her heart ❤️",
-"Connection established ✔",
-"",
-"class PersonYouLike {",
-"   constructor(name){",
-"       this.name = name;",
-"       this.isCute = true;",
-"       this.makesMeHappy = true;",
-"   }",
-"}",
-"",
-"const you = new PersonYouLike('Someone Special');",
-"",
-"while(true){",
-"   care();",
-"   respect();",
-"   makeHerSmile();",
-"}",
-"",
-"// compiling feelings...",
-"// no errors found ❤️"
-];
+const yesBtn = document.getElementById("yesBtn");
+const noBtn = document.getElementById("noBtn");
+const success = document.getElementById("success");
+const card = document.querySelector(".card");
 
-let index = 0;
-let charIndex = 0;
-const speed = 35;
-const codeDiv = document.getElementById("code");
+let scale = 1;
 
-function typeCode(){
-    if(index < codeLines.length){
-        if(charIndex < codeLines[index].length){
-            codeDiv.innerHTML += codeLines[index].charAt(charIndex);
-            charIndex++;
-            setTimeout(typeCode, speed);
-        }else{
-            codeDiv.innerHTML += "\n";
-            index++;
-            charIndex = 0;
-            setTimeout(typeCode, 350);
-        }
-    }else{
-        document.getElementById("popup").classList.remove("hidden");
-        typeFinal();
-    }
-}
+// YES button grows
+noBtn.addEventListener("mouseover", () => {
 
-const finalMessage = "Maybe I am not perfect… but with you, I really want to try. Will you stay with me?";
+    // move NO button randomly
+    const x = Math.random() * (window.innerWidth - 120);
+    const y = Math.random() * (window.innerHeight - 80);
 
-let finalIndex = 0;
+    noBtn.style.position = "fixed";
+    noBtn.style.left = x + "px";
+    noBtn.style.top = y + "px";
 
-function typeFinal(){
-    const text = document.getElementById("finalText");
-    if(finalIndex < finalMessage.length){
-        text.innerHTML += finalMessage.charAt(finalIndex);
-        finalIndex++;
-        setTimeout(typeFinal, 40);
-    }
-}
+    // grow YES button
+    scale += 0.15;
+    yesBtn.style.transform = `scale(${scale})`;
+});
 
-function showHeart(){
-    document.getElementById("heart").classList.remove("hidden");
-}
-
-typeCode();
+// clicking YES
+yesBtn.addEventListener("click", () => {
+    card.classList.add("hidden");
+    success.classList.remove("hidden");
+});

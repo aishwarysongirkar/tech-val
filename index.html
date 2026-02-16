@@ -3,23 +3,29 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Dating a Person in Tech</title>
+<title>Will you be my Valentine?</title>
 <link rel="stylesheet" href="style.css">
 </head>
 
 <body>
 
-<div class="terminal">
-    <div id="code"></div>
+<div class="card">
+    <div class="emoji">🐻❤️</div>
+
+    <h1 id="question">Nirali, will you be my Valentine?</h1>
+
+    <div class="buttons">
+        <button id="yesBtn">Yes</button>
+        <button id="noBtn">No</button>
+    </div>
+
+    <p class="small">*You cannot say no 🤭</p>
 </div>
 
-<div id="popup" class="hidden">
-    <h1>💻 Dating a Person in Tech Means...</h1>
-    <p id="finalText"></p>
-    <button onclick="showHeart()">Click Here ❤️</button>
+<div id="success" class="hidden">
+    <h1>YAYYYYY ❤️</h1>
+    <p>You just made me the happiest person today.</p>
 </div>
-
-<div id="heart" class="hidden">❤️ I Love You ❤️</div>
 
 <script src="script.js"></script>
 </body>
