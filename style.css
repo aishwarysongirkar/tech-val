@@ -1,0 +1,56 @@
+body{
+    background:black;
+    color:#00ff9c;
+    font-family: Consolas, monospace;
+    margin:0;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    height:100vh;
+    flex-direction:column;
+}
+
+.terminal{
+    width:80%;
+    max-width:800px;
+    padding:20px;
+    border:2px solid #00ff9c;
+    border-radius:8px;
+    box-shadow:0 0 20px #00ff9c;
+    min-height:250px;
+}
+
+#code{
+    white-space:pre-wrap;
+    font-size:18px;
+}
+
+.hidden{
+    display:none;
+}
+
+#popup{
+    text-align:center;
+    margin-top:20px;
+}
+
+button{
+    padding:12px 25px;
+    background:#00ff9c;
+    border:none;
+    border-radius:6px;
+    cursor:pointer;
+    font-weight:bold;
+}
+
+#heart{
+    font-size:40px;
+    margin-top:20px;
+    animation: pulse 1s infinite;
+}
+
+@keyframes pulse{
+    0%{transform:scale(1);}
+    50%{transform:scale(1.2);}
+    100%{transform:scale(1);}
+}
