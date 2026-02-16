@@ -21,6 +21,7 @@ function typeText(element, text, speed, callback){
     typing();
 }
 
+/* first line */
 typeText(
     line1,
     "Hello Aarya…",
@@ -34,6 +35,11 @@ typeText(
                 () => {
                     buttons.style.display = "block";
                     placeNoInitial();
+
+                    /* fade away hello text after question appears */
+                    setTimeout(()=>{
+                        line1.classList.add("fade");
+                    },900);
                 }
             );
         },700);
@@ -41,7 +47,7 @@ typeText(
 );
 
 
-/* ---------------- NO BUTTON GAME ---------------- */
+/* ---------------- BUTTON GAME ---------------- */
 
 let noScale = 1;
 let yesScale = 1;
@@ -52,7 +58,7 @@ function placeNoInitial(){
     noBtn.style.top = "20px";
 }
 
-/* when she tries pressing NO */
+/* NO escape logic */
 function escapeNo(){
 
     const padding = 20;
@@ -63,7 +69,7 @@ function escapeNo(){
     const randomX = Math.random() * maxX;
     const randomY = Math.random() * maxY;
 
-    /* teleport NO button */
+    /* teleport */
     noBtn.style.left = randomX + "px";
     noBtn.style.top = randomY + "px";
 
@@ -79,7 +85,7 @@ function escapeNo(){
     yesBtn.style.zIndex = "5";
 }
 
-/* desktop + mobile */
+/* desktop + iPhone */
 noBtn.addEventListener("mouseenter", escapeNo);
 noBtn.addEventListener("touchstart", escapeNo);
 
@@ -101,7 +107,7 @@ function startHearts(){
 }
 
 
-/* ---------------- YES CLICK → CALENDAR INVITE ---------------- */
+/* ---------------- YES CLICK ---------------- */
 
 yesBtn.addEventListener("click", ()=>{
 
@@ -110,8 +116,9 @@ yesBtn.addEventListener("click", ()=>{
 
     startHearts();
 
-    /* open calendar invite after hearts */
+    /* open calendar invite */
     setTimeout(()=>{
         window.location.href = "date.ics";
     },3000);
 });
+
