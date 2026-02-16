@@ -4,24 +4,22 @@ const buttons = document.getElementById("buttons");
 const yesBtn = document.getElementById("yes");
 const noBtn = document.getElementById("no");
 
-/* -------- TYPING EFFECT -------- */
+/* ---------------- TYPING EFFECT ---------------- */
 
 function typeText(element, text, speed, callback){
     let i = 0;
-
     function typing(){
         if(i < text.length){
             element.innerHTML += text.charAt(i);
             i++;
             setTimeout(typing, speed);
-        } else if(callback){
+        }else if(callback){
             callback();
         }
     }
     typing();
 }
 
-/* First line */
 typeText(
     line1,
     "Hello Aarya…",
@@ -34,6 +32,7 @@ typeText(
                 60,
                 () => {
                     buttons.style.display = "block";
+                    startNoMovement();
                 }
             );
         },700);
@@ -41,31 +40,73 @@ typeText(
 );
 
 
-/* -------- NO BUTTON ESCAPE -------- */
+/* ---------------- NO BUTTON GAME LOGIC ---------------- */
 
 let noScale = 1;
+let yesScale = 1;
+let velocityX = 3;
+let velocityY = 2.5;
+let posX = 120;
+let posY = 40;
+let moving = false;
 
-function moveNoButton(){
-    const maxX = window.innerWidth - noBtn.offsetWidth - 20;
-    const maxY = window.innerHeight - noBtn.offsetHeight - 20;
-
-    const x = Math.random()*maxX;
-    const y = Math.random()*maxY;
-
-    noBtn.style.left = x + "px";
-    noBtn.style.top = y + "px";
-
-    noScale -= 0.07;
-    if(noScale < 0.35) noScale = 0.35;
-
-    noBtn.style.transform = `scale(${noScale})`;
+/* Start continuous bouncing movement */
+function startNoMovement(){
+    if(moving) return;
+    moving = true;
+    requestAnimationFrame(animateNo);
 }
 
-noBtn.addEventListener("mouseenter", moveNoButton);
-noBtn.addEventListener("touchstart", moveNoButton);
+function animateNo(){
+
+    const maxX = window.innerWidth - noBtn.offsetWidth;
+    const maxY = window.innerHeight - noBtn.offsetHeight;
+
+    posX += velocityX;
+    posY += velocityY;
+
+    /* bounce from edges */
+    if(posX <= 0 || posX >= maxX){
+        velocityX *= -1;
+    }
+    if(posY <= 0 || posY >= maxY){
+        velocityY *= -1;
+    }
+
+    noBtn.style.left = posX + "px";
+    noBtn.style.top = posY + "px";
+
+    requestAnimationFrame(animateNo);
+}
 
 
-/* -------- HEART SHOWER -------- */
+/* When she tries to press NO */
+function escapeAttempt(){
+
+    /* shrink NO */
+    noScale -= 0.12;
+    if(noScale < 0.25) noScale = 0.25;
+    noBtn.style.transform = `scale(${noScale})`;
+
+    /* speed up */
+    velocityX *= 1.18;
+    velocityY *= 1.18;
+
+    /* grow YES */
+    yesScale += 0.12;
+    yesBtn.style.transform = `scale(${yesScale})`;
+    yesBtn.style.zIndex = "10";
+
+    /* glow effect */
+    yesBtn.style.boxShadow = "0 0 25px rgba(255,46,122,0.7)";
+}
+
+/* desktop + mobile */
+noBtn.addEventListener("mouseenter", escapeAttempt);
+noBtn.addEventListener("touchstart", escapeAttempt);
+
+
+/* ---------------- HEART SHOWER ---------------- */
 
 function startHearts(){
     setInterval(()=>{
@@ -78,11 +119,11 @@ function startHearts(){
 
         document.body.appendChild(heart);
         setTimeout(()=>heart.remove(),5000);
-    },170);
+    },160);
 }
 
 
-/* -------- YES CLICK -------- */
+/* ---------------- YES CLICK ---------------- */
 
 yesBtn.addEventListener("click", ()=>{
 
@@ -91,16 +132,13 @@ yesBtn.addEventListener("click", ()=>{
 
     startHearts();
 
-    /* EMAIL INVITE */
-
-    const subject = "Date on Sunday ☕";
+    const subject = "Sunday ☕";
     const body =
 `Hi Aishwary,
 
-I just opened your little surprise page 😄
-So yes — I’m officially saying yes.
+I just opened your surprise… and yes 😄
 
-Sunday works.
+Sunday works for me.
 10:30 pick-up confirmed.
 
 – Aarya`;
