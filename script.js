@@ -1,21 +1,25 @@
-// detect mobile
+// detect mobile (important for iPhone safari sizing)
 if (/Android|iPhone|iPad|iPod/i.test(navigator.userAgent)) {
   document.body.classList.add("mobile");
 }
 
 /* ----------- TYPING INTRO ----------- */
 
-const introText = "Hello Aarya… I’ve been meaning to ask you something…";
+const introText = "Hello Aarya...\nI’ve been meaning to ask you something...";
 const mainText = document.getElementById("mainText");
 
 let index = 0;
-mainText.innerText = "";
+mainText.innerHTML = "";
 
 function typeWriter() {
   if (index < introText.length) {
-    mainText.innerText += introText.charAt(index);
+    if (introText.charAt(index) === "\n") {
+      mainText.innerHTML += "<br>";
+    } else {
+      mainText.innerHTML += introText.charAt(index);
+    }
     index++;
-    setTimeout(typeWriter, 45);
+    setTimeout(typeWriter, 40);
   } else {
     setTimeout(showQuestion, 900);
   }
@@ -24,7 +28,7 @@ function typeWriter() {
 window.onload = typeWriter;
 
 function showQuestion() {
-  mainText.innerText = "Will you go on a date with me this Sunday? ❤️";
+  mainText.innerHTML = "Will you go on a date with me this Sunday? ❤️";
 }
 
 /* ----------- NO BUTTON GAME ----------- */
@@ -47,16 +51,13 @@ function moveNoButton() {
   noBtn.style.left = randX + "px";
   noBtn.style.top = randY + "px";
 
-  // shrink NO
   noSize -= 0.18;
   if (noSize < 0.35) noSize = 0.35;
   noBtn.style.transform = `scale(${noSize})`;
 
-  // grow YES
   yesSize += 0.22;
   yesBtn.style.transform = `scale(${yesSize})`;
 
-  // vibration on phone
   if (navigator.vibrate) navigator.vibrate(80);
 }
 
@@ -64,16 +65,28 @@ function moveNoButton() {
 
 function sheSaidYes() {
 
-  mainText.innerText = "YAYYYY ❤️ I’m really happy!!!";
+  const sub = document.getElementById("subText");
+  sub.style.display = "none";
+
+  // Shinchan dancing GIF
+  document.getElementById("memeArea").innerHTML =
+    `<img src="https://media.tenor.com/0AVbKGY_MxMAAAAC/shinchan-dance.gif"
+      style="width:160px; margin-top:10px; border-radius:12px;">`;
+
+  mainText.innerHTML = "YAYYY ❤️ I knew you would say yes!";
 
   startHeartsRain();
 
-  // message from her side
-  const message =
-    "Hey 😄%0A%0A" +
-    "I just opened your surprise… and yes ❤️%0A" +
-    "I’d love to go on a date with you this Sunday!%0A%0A" +
-    "Pick me up at 10:30 ☕🚗";
+  // Proper iPhone compatible encoding
+  const message = encodeURIComponent(
+`Heyy 😄
+
+I just opened your surprise… and okay fine,
+yes — I’ll go on a date with you this Sunday ❤️
+
+10:30 works for me 🙂
+And you better not be late.`
+  );
 
   setTimeout(() => {
     window.location.href =
@@ -99,12 +112,11 @@ let hearts = [];
 function Heart() {
   this.x = Math.random() * canvas.width;
   this.y = -10;
-  this.size = Math.random() * 20 + 12;
+  this.size = Math.random() * 18 + 10;
   this.speed = Math.random() * 2 + 1.5;
 }
 
 Heart.prototype.draw = function () {
-
   ctx.fillStyle = "#ff4d6d";
 
   let x = this.x;
@@ -136,7 +148,6 @@ function animateHearts() {
   hearts.forEach((heart, index) => {
     heart.update();
     heart.draw();
-
     if (heart.y > canvas.height) hearts.splice(index, 1);
   });
 
