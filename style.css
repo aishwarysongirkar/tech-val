@@ -1,84 +1,99 @@
-* {
-  box-sizing: border-box;
+body{
+    margin:0;
+    padding:0;
+    font-family: 'Segoe UI', sans-serif;
+    background: linear-gradient(135deg,#ffd6e7,#ffe9f2,#fff5fa);
+    height:100vh;
+    overflow:hidden;
 }
 
-body {
-  margin: 0;
-  font-family: 'Segoe UI', Arial, sans-serif;
-  background: linear-gradient(135deg, #ffd6e0, #ffeaf1);
-  min-height: 100vh;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  overflow: hidden;
+.container{
+    text-align:center;
+    padding-top:8vh;
 }
 
-/* CARD */
-.container {
-  position: relative;
-  z-index: 2;
-  background: white;
-  padding: 35px 25px;
-  border-radius: 20px;
-  width: min(90%, 380px);
-  text-align: center;
-  box-shadow: 0 12px 35px rgba(0,0,0,0.15);
+.intro{
+    color:#444;
+    margin-bottom:0;
 }
 
-/* TEXT */
-h1 {
-  font-size: 24px;
-  color: #d6336c;
-  margin-bottom: 10px;
-  min-height: 60px;
+.intro2{
+    color:#666;
+    margin-top:5px;
+    font-weight:500;
 }
 
-.sub {
-  font-size: 16px;
-  color: #555;
-  margin-bottom: 25px;
+#question{
+    margin-top:20px;
+    font-size:28px;
+    color:#ff2e7a;
 }
 
-/* BUTTONS */
-button {
-  padding: 14px 24px;
-  font-size: 18px;
-  border-radius: 14px;
-  border: none;
-  cursor: pointer;
-  transition: 0.25s ease;
-  margin: 8px;
+.honest{
+    margin-top:5px;
+    color:#555;
 }
 
-#yesBtn {
-  background: #ff4d6d;
-  color: white;
-  box-shadow: 0 0 22px rgba(255, 77, 109, 0.6);
+.buttons{
+    margin-top:30px;
+    position:relative;
+    height:200px;
 }
 
-#yesBtn:hover {
-  transform: scale(1.08);
+button{
+    padding:14px 28px;
+    font-size:18px;
+    border:none;
+    border-radius:14px;
+    cursor:pointer;
+    transition:0.25s;
+    position:absolute;
 }
 
-#noBtn {
-  background: #777;
-  color: white;
+/* YES BUTTON */
+#yes{
+    background:#ff2e7a;
+    color:white;
+    left:35%;
 }
 
-/* HEART CANVAS */
-canvas {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  z-index: 1;
-  pointer-events: none;
+#yes:hover{
+    transform:scale(1.2);
+    box-shadow:0 0 18px rgba(255,46,122,0.6);
 }
 
-/* MOBILE */
-@media (max-width: 480px) {
-  h1 { font-size: 22px; }
-  .sub { font-size: 15px; }
-  #yesBtn { font-size: 22px; }
+/* NO BUTTON */
+#no{
+    background:#444;
+    color:white;
+    left:55%;
+}
+
+/* Hearts */
+.heart{
+    position:fixed;
+    top:-20px;
+    font-size:22px;
+    animation:fall linear forwards;
+    pointer-events:none;
+}
+
+@keyframes fall{
+    to{
+        transform:translateY(110vh);
+        opacity:0;
+    }
+}
+
+/* Mobile optimization */
+@media(max-width:600px){
+    #question{
+        font-size:22px;
+        padding:0 15px;
+    }
+
+    button{
+        padding:12px 20px;
+        font-size:16px;
+    }
 }
