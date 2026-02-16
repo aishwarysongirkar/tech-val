@@ -1,94 +1,84 @@
-const yesBtn = document.getElementById("yesBtn");
-const noBtn = document.getElementById("noBtn");
-const success = document.getElementById("success");
-const card = document.querySelector(".card");
+function onFormSubmit(e) {
 
-let yesScale = 1;
-let noScale = 1;
+  // ====== GET FORM DATA ======
+  var responses = e.namedValues;
 
-// --- NO BUTTON ESCAPE LOGIC ---
-function moveNoButton(e){
+  var name = responses["Name"][0];
+  var email = responses["Email"][0];
+  var phone = responses["Phone"][0];
+  var meetingDate = responses["Meeting Date"][0];
+  var meetingTime = responses["Meeting Time"][0];
+  var purpose = responses["Purpose"][0];
 
-    const mouseX = e.clientX;
-    const mouseY = e.clientY;
+  // ====== CONVERT DATE & TIME ======
+  var startDateTime = new Date(meetingDate + " " + meetingTime);
+  var endDateTime = new Date(startDateTime.getTime() + 30 * 60000); // 30 minutes meeting
 
-    const rect = noBtn.getBoundingClientRect();
+  // ====== CREATE GOOGLE CALENDAR EVENT ======
+  var calendar = CalendarApp.getDefaultCalendar();
 
-    const btnX = rect.left + rect.width/2;
-    const btnY = rect.top + rect.height/2;
-
-    const distance = Math.sqrt(
-        Math.pow(mouseX - btnX,2) + Math.pow(mouseY - btnY,2)
-    );
-
-    // when cursor comes near
-    if(distance < 150){
-
-        // teleport randomly
-        const x = Math.random() * (window.innerWidth - 120);
-        const y = Math.random() * (window.innerHeight - 80);
-
-        noBtn.style.position = "fixed";
-        noBtn.style.left = x + "px";
-        noBtn.style.top = y + "px";
-
-        // shrink NO
-        noScale -= 0.08;
-        if(noScale < 0.25) noScale = 0.25;
-        noBtn.style.transform = `scale(${noScale})`;
-
-        // grow YES
-        yesScale += 0.12;
-        yesBtn.style.transform = `scale(${yesScale})`;
+  var event = calendar.createEvent(
+    "MCCIA Meeting with " + name,
+    startDateTime,
+    endDateTime,
+    {
+      description:
+        "Meeting Details:\n\n" +
+        "Name: " + name + "\n" +
+        "Email: " + email + "\n" +
+        "Phone: " + phone + "\n" +
+        "Purpose: " + purpose + "\n\n" +
+        "Mahratta Chamber of Commerce, Industries & Agriculture (MCCIA)\nPune",
+      guests: email,
+      sendInvites: true
     }
+  );
+
+  // ====== FORMAT DATE ======
+  var formattedDate = Utilities.formatDate(startDateTime, "Asia/Kolkata", "dd MMMM yyyy");
+  var formattedTime = Utilities.formatDate(startDateTime, "Asia/Kolkata", "hh:mm a");
+
+  // ====== EMAIL TO APPLICANT ======
+  MailApp.sendEmail({
+    to: email,
+    subject: "MCCIA Meeting Confirmation",
+    htmlBody:
+      "<p>Dear " + name + ",</p>" +
+      "<p>Your meeting with <b>MCCIA</b> has been successfully scheduled.</p>" +
+      "<p><b>Date:</b> " + formattedDate + "<br>" +
+      "<b>Time:</b> " + formattedTime + "</p>" +
+      "<p>A calendar invitation has been sent to your email. Please accept it to add the meeting to your calendar.</p>" +
+      "<p>If you need to reschedule, simply reply to this email.</p>" +
+      "<br><p>Regards,<br><b>MCCIA Team</b><br>Pune</p>"
+  });
+
+  // ====== EMAIL TO YOU (ADMIN) ======
+  MailApp.sendEmail({
+    to: "aishwarysongirkar30@gmail.com",   // ⚠️ CHANGE THIS TO YOUR EMAIL
+    subject: "New Meeting Booking - " + name,
+    body:
+      "New meeting scheduled:\n\n" +
+      "Name: " + name + "\n" +
+      "Email: " + email + "\n" +
+      "Phone: " + phone + "\n" +
+      "Date: " + formattedDate + "\n" +
+      "Time: " + formattedTime + "\n" +
+      "Purpose: " + purpose
+  });
+
+  // ====== WHATSAPP MESSAGE LINK TO YOU ======
+  var adminPhone = "918329115026";   // ✅ YOUR NUMBER UPDATED
+
+  var message =
+    "New MCCIA Meeting Booking:%0A%0A" +
+    "Name: " + name + "%0A" +
+    "Phone: " + phone + "%0A" +
+    "Email: " + email + "%0A" +
+    "Date: " + formattedDate + "%0A" +
+    "Time: " + formattedTime + "%0A" +
+    "Purpose: " + purpose;
+
+  var whatsappLink = "https://wa.me/" + adminPhone + "?text=" + message;
+
+  Logger.log("WhatsApp Notification Link: " + whatsappLink);
 }
-
-document.addEventListener("mousemove", moveNoButton);
-
-
-// HEART RAIN
-function createHeart(){
-    const heart = document.createElement("div");
-    heart.classList.add("heart");
-    heart.innerHTML = "💖";
-
-    heart.style.left = Math.random()*100 + "vw";
-    heart.style.animationDuration = (Math.random()*2 + 3) + "s";
-    heart.style.fontSize = (Math.random()*20 + 20) + "px";
-
-    document.getElementById("hearts").appendChild(heart);
-
-    setTimeout(()=>{
-        heart.remove();
-    },5000);
-}
-
-
-// GOOGLE CALENDAR INVITE
-function openCalendar(){
-
-    const title = encodeURIComponent("Date with Me ❤️");
-    const details = encodeURIComponent("You said yes... so now you officially owe me a date 😄");
-    const location = encodeURIComponent("Coffee + Dessert (Surprise Place)");
-    
-    // 22 Feb 2026, 6 PM IST
-    const start = "20260222T123000Z";
-    const end = "20260222T143000Z";
-
-    const url = `https://calendar.google.com/calendar/render?action=TEMPLATE&text=${title}&details=${details}&location=${location}&dates=${start}/${end}`;
-
-    window.open(url,"_blank");
-}
-
-
-// YES CLICK
-yesBtn.addEventListener("click", () => {
-    card.classList.add("hidden");
-    success.classList.remove("hidden");
-
-    // hearts start
-    setInterval(createHeart, 180);
-
-    // open calendar after 2 sec
-    setTimeout(openCalendar,2000);
-});
